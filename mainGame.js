@@ -15,15 +15,17 @@ function preload() {
     game.load.image('platform', 'assets/platform.png')
     game.load.image('sky', 'assets/sky.png')
     game.load.spritesheet('mario', 'assets/mario.png', 395, 448, 3)
+    game.load.image('platformV', 'assets/platformV.png')
 
     game.load.image('mario1', 'assets/mario/1.png')
     game.load.image('mario2', 'assets/mario/2.png')
     game.load.image('mario3', 'assets/mario/3.png');
+    game.load.image('star', 'assets/star.png')
     
 }
 
 function create() {
-    game.add.tileSprite(0, 0, 5000, 800, 'sky');
+    game.add.tileSprite(0, 0, 8000, 800, 'sky');
 
     player = game.add.sprite(5, 5, 'mario1')
     game.physics.arcade.enable(player);
@@ -39,6 +41,9 @@ function create() {
     platforms.create(2400, 400, 'platform')
     platforms.create(3200, 300, 'platform')
     platforms.create(4000, 150, 'platform')
+    platforms.create(4800, 50, 'platformV')
+    star.create(4800,50, "star")
+
     
     
 
@@ -59,7 +64,7 @@ function create() {
     timer.start();
 
     game.camera.follow(player);
-    game.world.setBounds(0, 0, 120000, 8000)
+    game.world.setBounds(0, 0, 8000, 800)
 
 }
 
@@ -72,6 +77,32 @@ function update() {
             player.body.velocity.y = -250;
             slamTime = game.time.now + 750;
         }
+        stars = game.add.group();
+
+    stars.enableBody = true;
+
+
+        //  Let gravity do its thing
+        star.body.gravity.y = 6;
+
+        //  This just gives each star a slightly random bounce value
+        star.body.bounce.y = 0.7 + Math.random() * 0.2;
+    }
+var score = 0;
+var scoreText;
+scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+
+function collectStar (player, star) {
+
+    // Removes the star from the screen
+    star.kill();
+
+    //  Add and update the score
+    score += 10;
+    scoreText.text = 'Score: ' + score;
+
+}
+
     });
 
     if (cursors.left.isDown) {
@@ -82,6 +113,9 @@ function update() {
     } else {
         player.body.velocity.x = 0;
     }
+    //if(player.body.y=2000){
+        //.add.text(16, 16, 'Game Over.', { fontSize: '32px', fill: '#000' });
+    //}
 }
 
 function render() {
@@ -90,6 +124,7 @@ function render() {
     
 
 }
+
 
 function updateSprite() {
     switch (currentImage) {
